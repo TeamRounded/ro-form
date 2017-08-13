@@ -13,6 +13,7 @@
   },
   "author": "Igor Pantovic <igor@pantovic.com> (http://igor.pantovic.com)",
   "license": "MIT",
+  "repository": "github:TeamRounded/ro-form",
   "dependencies": {
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
