@@ -1,5 +1,5 @@
 {
-  "name": "ro-form",
+  "name": "@rounded/ro-form",
   "version": "1.0.0",
   "description": "Minimalistic Form utility library for React",
   "main": "dist/ro-form.js",
