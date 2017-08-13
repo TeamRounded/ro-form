@@ -1,6 +1,9 @@
 {
   "name": "@rounded/ro-form",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "description": "Minimalistic Form utility library for React",
   "main": "dist/ro-form.js",
