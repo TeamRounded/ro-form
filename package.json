@@ -4,31 +4,34 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Minimalistic Form utility library for React",
   "main": "dist/ro-form.js",
   "scripts": {
-    "build": "babel src --out-file dist/ro-form.js --ignore test.js --presets=es2015,stage-2,react --source-maps",
+    "build": "webpack",
     "test": "jest"
   },
   "author": "Igor Pantovic <igor@pantovic.com> (http://igor.pantovic.com)",
   "license": "MIT",
   "repository": "github:TeamRounded/ro-form",
-  "dependencies": {
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2",
-    "prop-types": "^15.5.10",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+  "peerDependencies": {
+    "react": "^0.14 || ^15.0.0-rc || ^15.0",
+    "react-dom": "^0.14 || ^15.0.0-rc || ^15.0",
+    "prop-types": "^15.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-jest": "^20.0.3",
+    "babel-loader": "^7.1.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "enzyme": "^2.9.1",
     "jest": "^20.0.4",
-    "react-test-renderer": "^15.6.1"
+    "react-test-renderer": "^15.6.1",
+    "webpack": "^3.5.4",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "prop-types": "^15.5.10"
   }
 }
