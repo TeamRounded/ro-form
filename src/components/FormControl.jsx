@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import set from 'lodash.set';
-import get from 'lodash.get';
 
 class FormControl extends Component {
   static propTypes = {
@@ -34,10 +32,7 @@ class FormControl extends Component {
     if (onChange) {
       onChange(value);
     } else {
-      let changes = {};
-      set(changes, path, value);
-
-      this.context.onFormDataChange[formName](changes);
+      this.context.onFormDataChange[formName]({ [path]: value });
     }
   };
 
@@ -46,7 +41,7 @@ class FormControl extends Component {
     const { formData } = this.context;
 
     if (typeof value === 'undefined') {
-      return get(formData[formName], path);
+      return formData[formName][path];
     } else {
       return value;
     }
