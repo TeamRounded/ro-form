@@ -6,7 +6,7 @@
 
 ## Examples
 
-```
+```JSX
 import React, { Component } from 'react';
 import { Form, FormControl } from 'ro-form';
 
@@ -69,7 +69,7 @@ const TextInput = ({ onChange, type, value }) => (
 
 ### Want to keep your form state in Redux? No problem!
 
-```
+```JSX
 import React, { Component } from 'react';
 import { Form, FormControl } from 'ro-form';
 import { connect } from 'react-redux';
@@ -150,7 +150,7 @@ Or:
 
 These two examples are identical:
 
-```
+```JSX
 <Form value={data} onChange={this.changeData}>
   {/* This is the same */}
   <FormControl
@@ -169,7 +169,7 @@ These two examples are identical:
 
 **Any component that receives `onChange` and `value` props can be used as `control` in `FormControl`**:
 
-```
+```JSX
 const TextInput = ({ onChange, type, value }) => (
   <input type={type || 'text'} onChange={e => onChange(e.target.value)} value={value}>
 );
@@ -188,7 +188,7 @@ const BabyNamePicker = ({ onChange, value, names }) => (
         className={value === name ? 'active' : 'inactive'}
       >
         {name}
-      </item>
+      </li>
     ))}
   </ul>
 );
