@@ -4,6 +4,14 @@
 
 **ro-form** is a minimalistic Form utility library for React that helps you build forms faster. It handles the data flow in forms and does not feature any UI. As examples below show, it is *extremely simple* to use. It can be used both with regular stateful `React` components and `redux`;
 
+## Install
+
+yarn:
+`yarn add ro-form`
+
+npm:
+`npm install --save ro-form`
+
 ## Examples
 
 ```JSX
