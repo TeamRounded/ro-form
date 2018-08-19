@@ -7,7 +7,7 @@
 		exports["ro-form"] = factory(require("react"), require("prop-types"));
 	else
 		root["ro-form"] = factory(root["react"], root["prop-types"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_1__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -159,6 +159,9 @@ var Form = function (_Component) {
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Form.__proto__ || Object.getPrototypeOf(Form)).call.apply(_ref, [this].concat(args))), _this), _this._onFormDataChange = function (changes) {
       _this.props.onChange(_extends({}, _this.props.value, changes));
+      Object.keys(changes).forEach(function (field) {
+        return _this.props.onFieldChange(field, changes[field]);
+      });
     }, _this._handleSubmit = function (e) {
       e.preventDefault();
       var onSubmit = _this.props.onSubmit;
@@ -218,6 +221,7 @@ Form.propTypes = {
 Form.defaultProps = {
   value: {},
   onChange: function onChange() {},
+  onFieldChange: function onFieldChange() {},
   name: '_RoForm'
 };
 Form.childContextTypes = {
