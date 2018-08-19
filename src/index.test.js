@@ -3,9 +3,9 @@ import { Form, FormControl } from './index';
 import { mount } from 'enzyme';
 
 const TextInput = ({ onChange, value }) => (
-  <input 
-    type={'email'} 
-    onChange={e => onChange(e.target.value)} 
+  <input
+    type={'email'}
+    onChange={e => onChange(e.target.value)}
     value={value}
   />
 );
@@ -93,9 +93,9 @@ test('Forms can be nested', () => {
 
   const form = mount(
     <Form value={parentFormValue} onChange={changeParentFormValue}>
-      <Form 
-        name={'contactInfo'} 
-        value={childFormValue} 
+      <Form
+        name={'contactInfo'}
+        value={childFormValue}
         onChange={changeChildFormValue}
       >
         <FormControl
@@ -109,8 +109,32 @@ test('Forms can be nested', () => {
 
   const input = form.find('TextInput');
   expect(input.props().value).toBe('Igor');
-  
+
   input.props().onChange('John');
   expect(parentFormValue).toEqual({ email: 'someguy@rounded.io' });
   expect(childFormValue).toEqual({ name: 'John' });
+});
+
+test('Form onFieldChange', () => {
+  let formValue = { email: 'igor@rounded.io' };
+
+  let fieldChanges = [];
+  const handleFieldChange = (field, value) => {
+    fieldChanges.push([field, value]);
+  };
+
+  const form = mount(
+    <Form value={formValue} onFieldChange={handleFieldChange}>
+      <FormControl
+        control={TextInput}
+        path={'email'}
+      />
+    </Form>
+  );
+
+  const input = form.find('TextInput');
+  input.props().onChange('aleksa@rounded.io');
+
+  expect(fieldChanges.length).toEqual(1);
+  expect(fieldChanges[0]).toEqual(['email', 'aleksa@rounded.io']);
 });

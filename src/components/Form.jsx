@@ -12,6 +12,7 @@ class Form extends Component {
   static defaultProps = {
     value: {},
     onChange: () => {},
+    onFieldChange: () => {},
     name: '_RoForm',
   };
 
@@ -38,6 +39,7 @@ class Form extends Component {
 
   _onFormDataChange = (changes) => {
     this.props.onChange({ ...this.props.value, ...changes });
+    Object.keys(changes).forEach(field => this.props.onFieldChange(field, changes[field]));
   };
 
   _handleSubmit = (e) => {

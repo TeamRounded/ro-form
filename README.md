@@ -135,7 +135,9 @@ ReduxLoginScreen = connect(mapStateToProps, mapDispatchToProps)(ReduxLoginScreen
 Props:
 
 * Required: `value`(Object): Object that contains data that needs to be provided to underlying **FormControl**s
-* Required: `onChange(newValue)`(Function): Function that is called every time data in any of the **FormControl**s changes. It receives one argument, which is the new `value` object.
+* Optional: `onChange(newValue)`(Function): Function that is called every time data in any of the **FormControl**s changes. It receives one argument, which is the new `value` object.
+* Optional: `onFieldChange(fieldName, newFieldValue)`(Function): Function that is called every time data in any of the **FormControl**s changes. 
+             The difference with `onChange` prop is that this one is called with just single field's new value.
 * Optional: `onSubmit`(Function): It is called once **Form** is submitted (eg. when user presses `Return` key on keyboard while one of form's inputs is focused). If you don't want to allow this behaviour, you do not have to provide this parameter.
 
 ### FormControl
