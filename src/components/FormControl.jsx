@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import FormContext from './_FormContext';
 
 class FormControl extends Component {
   static propTypes = {
@@ -21,10 +22,7 @@ class FormControl extends Component {
     value: undefined,
   };
 
-  static contextTypes = {
-    formData: PropTypes.object.isRequired,
-    onFormDataChange: PropTypes.object.isRequired
-  };
+  static contextType = FormContext;
 
   _onChange = (value) => {
     const { path, formName, onChange } = this.props;

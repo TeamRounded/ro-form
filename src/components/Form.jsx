@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import memoize from './_memoize';
+import FormContext from './_FormContext';
 
 class Form extends Component {
   static propTypes = {
@@ -7,6 +9,7 @@ class Form extends Component {
     onChange: PropTypes.func,
     onSubmit: PropTypes.func,
     name: PropTypes.string,
+    onFieldChange: PropTypes.func,
   };
 
   static defaultProps = {
@@ -16,26 +19,24 @@ class Form extends Component {
     name: '_RoForm',
   };
 
-  static childContextTypes = {
-    formData: PropTypes.object.isRequired,
-    onFormDataChange: PropTypes.object.isRequired,
-  };
-
-  static contextTypes = {
-    formData: PropTypes.object,
-    onFormDataChange: PropTypes.object,
-  };
-
-  getChildContext() {
-    let { formData, onFormDataChange } = this.context;
-    const { name } = this.props;
-    formData = formData || {};
-    onFormDataChange = onFormDataChange || {};
-    return {
-      formData: { ...formData, [name]: this.props.value },
+  _memoizedContext = memoize(
+    [
+      ({ formData }) => formData,
+      ({ onFormDataChange }) => onFormDataChange,
+      (_parentContext, value) => value,
+      (_parentContext, _value, name) => name
+    ],
+    (formData, onFormDataChange, value, name) => ({
+      formData: { ...formData, [name]: value },
       onFormDataChange: { ...onFormDataChange, [name]: this._onFormDataChange },
-    };
-  }
+    })
+  );
+
+  _getContext = (parentContext) => {
+    const { name, value } = this.props;
+
+    return this._memoizedContext(parentContext, value, name);
+  };
 
   _onFormDataChange = (changes) => {
     this.props.onChange({ ...this.props.value, ...changes });
@@ -51,17 +52,28 @@ class Form extends Component {
   render() {
     const { children, onSubmit } = this.props;
 
+    let content;
     if (onSubmit) {
-      return (
+      content = (
         <form onSubmit={this._handleSubmit}>
           {children}
         </form>
       );
     } else {
-      return (
+      content = (
         <div>{children}</div>
       );
     }
+
+    return (
+      <FormContext.Consumer>
+        {parentContext => (
+          <FormContext.Provider value={this._getContext(parentContext)}>
+            {content}
+          </FormContext.Provider>
+        )}
+      </FormContext.Consumer>
+    );
   }
 }
 

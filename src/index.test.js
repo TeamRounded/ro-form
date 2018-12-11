@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, FormControl } from './index';
-import { mount } from 'enzyme';
+import Enzyme, { mount } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+Enzyme.configure({ adapter: new Adapter() });
 
 const TextInput = ({ onChange, value }) => (
   <input
@@ -138,3 +140,44 @@ test('Form onFieldChange', () => {
   expect(fieldChanges.length).toEqual(1);
   expect(fieldChanges[0]).toEqual(['email', 'aleksa@rounded.io']);
 });
+
+
+test('form does not rerender if context value does not change', () => {{
+  let formValue = { email: 'igor@rounded.io' };
+
+  class RenderBlocker extends React.Component {
+    shouldComponentUpdate() {
+      return false;
+    }
+
+    render() {
+      return this.props.children;
+    }
+  }
+
+  let renderCount = 0;
+  class FormControlWithRenderCount extends FormControl {
+    render() {
+      renderCount++;
+      return super.render();
+    }
+  }
+
+  const MyComponent = () => (
+    <Form value={formValue}>
+      <RenderBlocker>
+        <FormControlWithRenderCount
+          path={'email'}
+          control={TextInput}
+        />
+      </RenderBlocker>
+    </Form>
+  );
+
+  const rendered = mount(<MyComponent />);
+  rendered.update();
+  rendered.setProps({ a: 5 });
+  rendered.update();
+
+  expect(renderCount).toEqual(1);
+}});
