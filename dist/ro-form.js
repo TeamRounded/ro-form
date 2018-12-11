@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -95,13 +95,33 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _react = __webpack_require__(0);
+
+var FormContext = (0, _react.createContext)({
+  formData: {},
+  onFormDataChange: {}
+});
+
+exports.default = FormContext;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.FormControl = exports.Form = undefined;
 
-var _Form = __webpack_require__(3);
+var _Form = __webpack_require__(4);
 
 var _Form2 = _interopRequireDefault(_Form);
 
-var _FormControl = __webpack_require__(4);
+var _FormControl = __webpack_require__(6);
 
 var _FormControl2 = _interopRequireDefault(_FormControl);
 
@@ -111,7 +131,7 @@ exports.Form = _Form2.default;
 exports.FormControl = _FormControl2.default;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -132,6 +152,14 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _memoize = __webpack_require__(5);
+
+var _memoize2 = _interopRequireDefault(_memoize);
+
+var _FormContext = __webpack_require__(2);
+
+var _FormContext2 = _interopRequireDefault(_FormContext);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -157,7 +185,29 @@ var Form = function (_Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Form.__proto__ || Object.getPrototypeOf(Form)).call.apply(_ref, [this].concat(args))), _this), _this._onFormDataChange = function (changes) {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Form.__proto__ || Object.getPrototypeOf(Form)).call.apply(_ref, [this].concat(args))), _this), _this._memoizedContext = (0, _memoize2.default)([function (_ref2) {
+      var formData = _ref2.formData;
+      return formData;
+    }, function (_ref3) {
+      var onFormDataChange = _ref3.onFormDataChange;
+      return onFormDataChange;
+    }, function (_parentContext, value) {
+      return value;
+    }, function (_parentContext, _value, name) {
+      return name;
+    }], function (formData, onFormDataChange, value, name) {
+      return {
+        formData: _extends({}, formData, _defineProperty({}, name, value)),
+        onFormDataChange: _extends({}, onFormDataChange, _defineProperty({}, name, _this._onFormDataChange))
+      };
+    }), _this._getContext = function (parentContext) {
+      var _this$props = _this.props,
+          name = _this$props.name,
+          value = _this$props.value;
+
+
+      return _this._memoizedContext(parentContext, value, name);
+    }, _this._onFormDataChange = function (changes) {
       _this.props.onChange(_extends({}, _this.props.value, changes));
       Object.keys(changes).forEach(function (field) {
         return _this.props.onFieldChange(field, changes[field]);
@@ -171,41 +221,41 @@ var Form = function (_Component) {
   }
 
   _createClass(Form, [{
-    key: 'getChildContext',
-    value: function getChildContext() {
-      var _context = this.context,
-          formData = _context.formData,
-          onFormDataChange = _context.onFormDataChange;
-      var name = this.props.name;
-
-      formData = formData || {};
-      onFormDataChange = onFormDataChange || {};
-      return {
-        formData: _extends({}, formData, _defineProperty({}, name, this.props.value)),
-        onFormDataChange: _extends({}, onFormDataChange, _defineProperty({}, name, this._onFormDataChange))
-      };
-    }
-  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props,
           children = _props.children,
           onSubmit = _props.onSubmit;
 
 
+      var content = void 0;
       if (onSubmit) {
-        return _react2.default.createElement(
+        content = _react2.default.createElement(
           'form',
           { onSubmit: this._handleSubmit },
           children
         );
       } else {
-        return _react2.default.createElement(
+        content = _react2.default.createElement(
           'div',
           null,
           children
         );
       }
+
+      return _react2.default.createElement(
+        _FormContext2.default.Consumer,
+        null,
+        function (parentContext) {
+          return _react2.default.createElement(
+            _FormContext2.default.Provider,
+            { value: _this2._getContext(parentContext) },
+            content
+          );
+        }
+      );
     }
   }]);
 
@@ -216,7 +266,8 @@ Form.propTypes = {
   value: _propTypes2.default.object,
   onChange: _propTypes2.default.func,
   onSubmit: _propTypes2.default.func,
-  name: _propTypes2.default.string
+  name: _propTypes2.default.string,
+  onFieldChange: _propTypes2.default.func
 };
 Form.defaultProps = {
   value: {},
@@ -224,18 +275,66 @@ Form.defaultProps = {
   onFieldChange: function onFieldChange() {},
   name: '_RoForm'
 };
-Form.childContextTypes = {
-  formData: _propTypes2.default.object.isRequired,
-  onFormDataChange: _propTypes2.default.object.isRequired
-};
-Form.contextTypes = {
-  formData: _propTypes2.default.object,
-  onFormDataChange: _propTypes2.default.object
-};
 exports.default = Form;
 
 /***/ }),
-/* 4 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var memoize = function memoize(argFns, fn, config) {
+  config = config || {};
+  var equalityFn = config.equalityFn || memoize.ArgEquality.identity;
+
+  var didRun = false;
+  var lastArgs = void 0,
+      lastResult = void 0;
+  var ctx = this;
+  var runFn = function runFn(args) {
+    didRun = true;
+    var result = fn.apply(ctx, args);
+    lastArgs = args;
+    lastResult = result;
+    return result;
+  };
+  return function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var fnArgs = argFns.map(function (argFn) {
+      return argFn.apply(ctx, args);
+    });
+    if (!didRun) {
+      return runFn(fnArgs);
+    } else {
+      var argsSame = fnArgs.every(function (arg, index) {
+        return equalityFn(arg, lastArgs[index]);
+      });
+      if (argsSame) {
+        return lastResult;
+      } else {
+        return runFn(fnArgs);
+      }
+    }
+  };
+};
+
+memoize.ArgEquality = {
+  identity: function identity(a, b) {
+    return a === b;
+  }
+};
+
+exports.default = memoize;
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -256,6 +355,10 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _FormContext = __webpack_require__(2);
+
+var _FormContext2 = _interopRequireDefault(_FormContext);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -353,10 +456,7 @@ FormControl.defaultProps = {
   onChange: null,
   value: undefined
 };
-FormControl.contextTypes = {
-  formData: _propTypes2.default.object.isRequired,
-  onFormDataChange: _propTypes2.default.object.isRequired
-};
+FormControl.contextType = _FormContext2.default;
 exports.default = FormControl;
 
 /***/ })
