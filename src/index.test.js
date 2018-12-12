@@ -1,46 +1,55 @@
 import React from 'react';
 import { Form, FormControl } from './index';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-Enzyme.configure({ adapter: new Adapter() });
+import { render, fireEvent, cleanup } from 'react-testing-library';
 
-const TextInput = ({ onChange, value }) => (
-  <input
-    type={'email'}
-    onChange={e => onChange(e.target.value)}
-    value={value}
-  />
-);
+afterEach(cleanup);
+
+class TextInput extends React.Component {
+  render() {
+    const { onChange, value } = this.props;
+
+    return (
+      <input
+        data-testid={'textinput'}
+        type={'email'}
+        onChange={e => onChange(e.target.value)}
+        value={value}
+      />
+    );
+  }
+}
 
 test('Field value is passed to controls', () => {
   let formValue = { email: 'someguy@rounded.io' };
 
-  const form = mount(
-    <Form value={formValue} onChange={() => {}}>
+  const { getByTestId } = render(
+    <Form value={formValue} onChange={() => {
+    }}>
       <FormControl
         control={TextInput}
         path={'email'}
       />
-    </Form>
+    </Form>,
   );
 
-  expect(form.find('TextInput').props().value).toBe('someguy@rounded.io');
+  expect(getByTestId('textinput').value).toBe('someguy@rounded.io');
 });
 
 test('value prop passed to controls can be overriden', () => {
   let formValue = { email: 'someguy@rounded.io' };
 
-  const form = mount(
-    <Form value={formValue} onChange={() => {}}>
+  const { getByTestId } = render(
+    <Form value={formValue} onChange={() => {
+    }}>
       <FormControl
         control={TextInput}
         value={'overriden@rounded.io'}
         path={'email'}
       />
-    </Form>
+    </Form>,
   );
 
-  expect(form.find('TextInput').props().value).toBe('overriden@rounded.io');
+  expect(getByTestId('textinput').value).toBe('overriden@rounded.io');
 });
 
 test('onChange prop that updates Form value is provided to controls', () => {
@@ -48,16 +57,18 @@ test('onChange prop that updates Form value is provided to controls', () => {
   const originalFormValue = formValue;
   const changeValue = newFormValue => formValue = newFormValue;
 
-  const form = mount(
+  const { getByTestId } = render(
     <Form value={formValue} onChange={changeValue}>
       <FormControl
         control={TextInput}
         path={'email'}
       />
-    </Form>
+    </Form>,
   );
 
-  form.find('TextInput').props().onChange('updatedvalue@rounded.io')
+  fireEvent.change(getByTestId('textinput'), {
+    target: { value: 'updatedvalue@rounded.io' },
+  });
 
   expect(formValue).toEqual({ email: 'updatedvalue@rounded.io' });
 
@@ -68,17 +79,20 @@ test('onChange prop that updates Form value is provided to controls', () => {
 test('onChange prop passed to controls can be overriden', () => {
   let formValue = { email: 'someguy@rounded.io' };
 
-  const form = mount(
-    <Form value={formValue} onChange={() => {}}>
+  const { getByTestId } = render(
+    <Form value={formValue} onChange={() => {
+    }}>
       <FormControl
         control={TextInput}
         onChange={newEmail => formValue = { ...formValue, otherEmail: newEmail }}
         path={'email'}
       />
-    </Form>
+    </Form>,
   );
 
-  form.find('TextInput').props().onChange('another@rounded.io');
+  fireEvent.change(getByTestId('textinput'), {
+    target: { value: 'another@rounded.io' },
+  });
 
   expect(formValue).toEqual({
     email: 'someguy@rounded.io',
@@ -93,7 +107,7 @@ test('Forms can be nested', () => {
   let childFormValue = { name: 'Igor' };
   const changeChildFormValue = newFormValue => childFormValue = newFormValue;
 
-  const form = mount(
+  const { getByTestId } = render(
     <Form value={parentFormValue} onChange={changeParentFormValue}>
       <Form
         name={'contactInfo'}
@@ -106,13 +120,15 @@ test('Forms can be nested', () => {
           formName={'contactInfo'}
         />
       </Form>
-    </Form>
+    </Form>,
   );
 
-  const input = form.find('TextInput');
-  expect(input.props().value).toBe('Igor');
+  expect(getByTestId('textinput').value).toBe('Igor');
 
-  input.props().onChange('John');
+  fireEvent.change(getByTestId('textinput'), {
+    target: { value: 'John' },
+  });
+
   expect(parentFormValue).toEqual({ email: 'someguy@rounded.io' });
   expect(childFormValue).toEqual({ name: 'John' });
 });
@@ -125,26 +141,25 @@ test('Form onFieldChange', () => {
     fieldChanges.push([field, value]);
   };
 
-  const form = mount(
+  const { getByTestId } = render(
     <Form value={formValue} onFieldChange={handleFieldChange}>
       <FormControl
         control={TextInput}
         path={'email'}
       />
-    </Form>
+    </Form>,
   );
 
-  const input = form.find('TextInput');
-  input.props().onChange('aleksa@rounded.io');
+  fireEvent.change(getByTestId('textinput'), {
+    target: { value: 'aleksa@rounded.io' },
+  });
 
   expect(fieldChanges.length).toEqual(1);
   expect(fieldChanges[0]).toEqual(['email', 'aleksa@rounded.io']);
 });
 
 
-test('form does not rerender if context value does not change', () => {{
-  let formValue = { email: 'igor@rounded.io' };
-
+test('form rerenders only when form value actually changes', () => {
   class RenderBlocker extends React.Component {
     shouldComponentUpdate() {
       return false;
@@ -156,28 +171,47 @@ test('form does not rerender if context value does not change', () => {{
   }
 
   let renderCount = 0;
-  class FormControlWithRenderCount extends FormControl {
+  class TextInputWithRenderCount extends TextInput {
     render() {
       renderCount++;
       return super.render();
     }
   }
 
-  const MyComponent = () => (
-    <Form value={formValue}>
-      <RenderBlocker>
-        <FormControlWithRenderCount
-          path={'email'}
-          control={TextInput}
-        />
-      </RenderBlocker>
-    </Form>
-  );
+  class MyComponent extends React.Component {
+    state = {
+      formValue: { email: 'igor@rounded.io' }
+    };
 
-  const rendered = mount(<MyComponent />);
-  rendered.update();
-  rendered.setProps({ a: 5 });
-  rendered.update();
+    _handleFieldChange = (field, value) => {
+      this.setState(state => ({ formValue: { ...state.formValue, [field]: value } }));
+    };
+
+    render() {
+      const { formValue } = this.state;
+
+      return (
+        <Form value={formValue} onFieldChange={this._handleFieldChange}>
+          <RenderBlocker>
+            <FormControl
+              path={'email'}
+              control={TextInputWithRenderCount}
+            />
+          </RenderBlocker>
+        </Form>
+      );
+    }
+  }
+
+  const { rerender, getByTestId } = render(<MyComponent />);
 
   expect(renderCount).toEqual(1);
-}});
+
+  fireEvent.change(getByTestId('textinput'), {
+    target: { value: 'petar@rounded.io' },
+  });
+
+  expect(getByTestId('textinput').value).toBe('petar@rounded.io');
+
+  expect(renderCount).toEqual(2);
+});
