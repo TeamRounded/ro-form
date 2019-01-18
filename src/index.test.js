@@ -215,3 +215,12 @@ test('form rerenders only when form value actually changes', () => {
 
   expect(renderCount).toEqual(2);
 });
+
+const DivRenderedComponent = () => <Form value={{}} onChange={() => {}} className={'myClass'} />;
+const FormRenderedComponent = () => <Form value={{}} onChange={() => {}} onSubmit={() => {}} className={'myClass'} />;
+[DivRenderedComponent, FormRenderedComponent].forEach(Component => {
+  test(`className prop on ${Component.name}`, () => {
+    const { container } = render(<Component />);
+    expect(container.firstChild.classList.contains('myClass')).toBe(true);
+  });
+});

@@ -10,6 +10,7 @@ class Form extends Component {
     onSubmit: PropTypes.func,
     name: PropTypes.string,
     onFieldChange: PropTypes.func,
+    className: PropTypes.string,
   };
 
   static defaultProps = {
@@ -50,18 +51,18 @@ class Form extends Component {
   };
 
   render() {
-    const { children, onSubmit } = this.props;
+    const { children, onSubmit, className } = this.props;
 
     let content;
     if (onSubmit) {
       content = (
-        <form onSubmit={this._handleSubmit}>
+        <form onSubmit={this._handleSubmit} className={className}>
           {children}
         </form>
       );
     } else {
       content = (
-        <div>{children}</div>
+        <div className={className}>{children}</div>
       );
     }
 
