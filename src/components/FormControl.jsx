@@ -4,7 +4,7 @@ import FormContext from './_FormContext';
 
 class FormControl extends Component {
   static propTypes = {
-    control: PropTypes.oneOfType([PropTypes.func, PropTypes.instanceOf(Component)]).isRequired,
+    control: PropTypes.any.isRequired,
     controlProps: PropTypes.object,
     formName: PropTypes.string,
     path: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
