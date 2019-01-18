@@ -442,7 +442,7 @@ var FormControl = function (_Component) {
 }(_react.Component);
 
 FormControl.propTypes = {
-  control: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.instanceOf(_react.Component)]).isRequired,
+  control: _propTypes2.default.any.isRequired,
   controlProps: _propTypes2.default.object,
   formName: _propTypes2.default.string,
   path: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.arrayOf(_propTypes2.default.string)]),
