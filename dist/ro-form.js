@@ -227,20 +227,21 @@ var Form = function (_Component) {
 
       var _props = this.props,
           children = _props.children,
-          onSubmit = _props.onSubmit;
+          onSubmit = _props.onSubmit,
+          className = _props.className;
 
 
       var content = void 0;
       if (onSubmit) {
         content = _react2.default.createElement(
           'form',
-          { onSubmit: this._handleSubmit },
+          { onSubmit: this._handleSubmit, className: className },
           children
         );
       } else {
         content = _react2.default.createElement(
           'div',
-          null,
+          { className: className },
           children
         );
       }
@@ -267,7 +268,8 @@ Form.propTypes = {
   onChange: _propTypes2.default.func,
   onSubmit: _propTypes2.default.func,
   name: _propTypes2.default.string,
-  onFieldChange: _propTypes2.default.func
+  onFieldChange: _propTypes2.default.func,
+  className: _propTypes2.default.string
 };
 Form.defaultProps = {
   value: {},
