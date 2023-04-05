@@ -11,6 +11,7 @@ class Form extends Component {
     name: PropTypes.string,
     onFieldChange: PropTypes.func,
     className: PropTypes.string,
+    preventDefaultSubmit: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -18,6 +19,7 @@ class Form extends Component {
     onChange: () => {},
     onFieldChange: () => {},
     name: '_RoForm',
+    preventDefaultSubmit: true,
   };
 
   _memoizedContext = memoize(
@@ -45,9 +47,12 @@ class Form extends Component {
   };
 
   _handleSubmit = (e) => {
-    e.preventDefault();
-    const { onSubmit } = this.props;
-    onSubmit();
+    const { onSubmit, preventDefaultSubmit } = this.props;
+    
+    if (preventDefaultSubmit) {
+      e.preventDefault();
+    }
+    onSubmit(e);
   };
 
   render() {

@@ -213,10 +213,15 @@ var Form = function (_Component) {
         return _this.props.onFieldChange(field, changes[field]);
       });
     }, _this._handleSubmit = function (e) {
-      e.preventDefault();
-      var onSubmit = _this.props.onSubmit;
+      var _this$props2 = _this.props,
+          onSubmit = _this$props2.onSubmit,
+          preventDefaultSubmit = _this$props2.preventDefaultSubmit;
 
-      onSubmit();
+
+      if (preventDefaultSubmit) {
+        e.preventDefault();
+      }
+      onSubmit(e);
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -269,13 +274,15 @@ Form.propTypes = {
   onSubmit: _propTypes2.default.func,
   name: _propTypes2.default.string,
   onFieldChange: _propTypes2.default.func,
-  className: _propTypes2.default.string
+  className: _propTypes2.default.string,
+  preventDefaultSubmit: _propTypes2.default.bool
 };
 Form.defaultProps = {
   value: {},
   onChange: function onChange() {},
   onFieldChange: function onFieldChange() {},
-  name: '_RoForm'
+  name: '_RoForm',
+  preventDefaultSubmit: true
 };
 exports.default = Form;
 
